@@ -6,7 +6,7 @@ stages:
 pages:
   stage: deploy
   script:
-    - npm ci
+    - npm install
     - npx parcel build index.html --out-dir public --public-url "./" --no-cache
   artifacts:
     paths:
