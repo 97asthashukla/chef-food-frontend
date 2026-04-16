@@ -1,22 +1,13 @@
-image: node:20
+image: node:18
 
 stages:
-  - build
   - deploy
-
-build:
-  stage: build
-  script:
-    - npm install
-    - npm run build -- --public-url "./"
-  artifacts:
-    paths:
-      - dist/
 
 pages:
   stage: deploy
   script:
-    - cp -r dist public
+    - npm install
+    - npx parcel build index.html --dist-dir public --public-url "./"
   artifacts:
     paths:
       - public
