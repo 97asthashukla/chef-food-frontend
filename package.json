@@ -2,11 +2,14 @@
   "name": "chef-food-frontend",
   "version": "1.0.0",
   "description": "creating react project",
+  "homepage": "https://97asthashukla.github.io/chef-food-frontend",
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node server.js",
     "client": "parcel index.html",
-    "build": "parcel build index.html",
+    "build": "parcel build index.html --public-url /chef-food-frontend/",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "test": "jest"
   },
   "repository": {
@@ -27,5 +30,8 @@
   },
   "browserslist": [
     "last 2 versions"
-  ]
+  ],
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
 }
