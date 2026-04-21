@@ -1,4 +1,4 @@
-import "./index.css";
+﻿import "./index.css";
 import ReactDOM from "react-dom/client";
 import { Header } from "./components/Header";
 import { Body } from "./components/Body";
@@ -35,8 +35,9 @@ const appRouter = createBrowserRouter([
     ],
     errorElement:<Error/>
   },
- 
-])
-const root = ReactDOM.createRoot(document.getElementById("root"));
+], {
+  basename: '/chef-food-frontend'
+});
 
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<RouterProvider router={appRouter} />);
