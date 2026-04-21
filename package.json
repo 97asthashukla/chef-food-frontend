@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "creating react project",
   "scripts": {
-    "start": "parcel index.html",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server.js",
+    "client": "parcel index.html",
     "build": "parcel build index.html",
     "test": "jest"
   },
