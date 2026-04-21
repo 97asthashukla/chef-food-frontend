@@ -14,7 +14,7 @@ export const RestaurantMenu = () => {
 
   async function fetchData() {
     try {
-      const response = await fetch(`${MENU_URL}${id}`);
+      const response = await fetch(MENU_URL(id));
       const resData = await response.json();
       setRestaurantMenu(resData);
     } catch (error) {
