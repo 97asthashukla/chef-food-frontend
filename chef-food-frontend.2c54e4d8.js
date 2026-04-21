@@ -752,7 +752,7 @@ const AppComponent = ()=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         columnNumber: 3
     }, undefined);
 _c = AppComponent;
-const appRouter = (0, _reactRouterDom.createBrowserRouter)([
+const appRouter = (0, _reactRouterDom.createHashRouter)([
     {
         path: '/',
         element: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(AppComponent, {}, void 0, false, {
@@ -792,15 +792,13 @@ const appRouter = (0, _reactRouterDom.createBrowserRouter)([
             columnNumber: 18
         }, undefined)
     }
-], {
-    basename: '/chef-food-frontend'
-});
+]);
 const root = (0, _clientDefault.default).createRoot(document.getElementById("root"));
 root.render(/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.RouterProvider), {
     router: appRouter
 }, void 0, false, {
     fileName: "src/App.js",
-    lineNumber: 43,
+    lineNumber: 41,
     columnNumber: 13
 }, undefined));
 var _c;
