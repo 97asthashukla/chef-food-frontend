@@ -1,0 +1,87 @@
+.container {
+  border: 1px solid #ddd;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  display: flex;
+}
+
+.filter-btn {
+  cursor: pointer;
+  margin: 10px;
+}
+
+.logo {
+  width: 200px;
+  height: 100px;
+  padding: 5px;
+}
+
+.nav-items > ul {
+  padding: 0 20px;
+  font-size: 24px;
+  list-style-type: none;
+  display: flex;
+}
+
+.nav-items > ul > li {
+  margin: 10px;
+  padding: 10px;
+}
+
+.res-container {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.res-card {
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  width: 300px;
+  min-height: 320px;
+  margin: 8px;
+  padding: 8px;
+}
+
+.res-card:hover {
+  cursor: pointer;
+  border: 1px solid #000;
+}
+
+.search {
+  margin: 5px;
+  padding: 10px;
+}
+
+.res-logo {
+  object-fit: cover;
+  border-radius: 6px;
+  width: 100%;
+  height: 180px;
+}
+
+.res-name {
+  margin: 10px 0 8px;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.res-cuisines {
+  color: #333;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  min-height: 44px;
+  margin: 6px 0;
+  font-size: 16px;
+  line-height: 1.35;
+  display: -webkit-box;
+  overflow: hidden;
+}
+
+.res-cost, .res-rating, .res-time {
+  margin: 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+/*# sourceMappingURL=react-project.78ad83b5.css.map */

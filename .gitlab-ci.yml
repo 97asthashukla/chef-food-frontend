@@ -1,0 +1,15 @@
+image: node:18
+
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  script:
+    - npm install
+    - npx parcel build index.html --dist-dir public --public-url "./" --no-cache
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
