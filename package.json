@@ -10,6 +10,7 @@
     "build": "parcel build index.html --public-url ./ && node scripts/fix-gh-pages-paths.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
+    "deploy:force": "node scripts/deploy-gh-pages.js",
     "test": "jest"
   },
   "repository": {
