@@ -14,7 +14,8 @@ const API_BASE =
 // Build URLs with dynamic location parameters
 export const buildRestaurantListUrl = (lat, lng) => {
 	const locationQuery = `lat=${lat}&lng=${lng}`;
-	return `${API_BASE}/api/restaurants/list?${locationQuery}`;
+	const restaurantListPath = API_BASE === API_BASE_PROD ? "/api/restaurants" : "/api/restaurants/list";
+	return `${API_BASE}${restaurantListPath}?${locationQuery}`;
 };
 
 export const buildMenuUrl = (restaurantId, lat, lng) => {
