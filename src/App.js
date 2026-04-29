@@ -11,6 +11,7 @@ import { Error } from "./components/Error";
 import { RestaurantMenu } from "./components/RestaurantMenu";
 import { CartProvider } from "./context/CartContext";
 import { LocationProvider } from "./context/LocationContext";
+import { ToastProvider } from "./context/ToastContext";
 
 
 const AppComponent = () => (
@@ -56,9 +57,11 @@ const appRouter = createHashRouter([
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <LocationProvider>
-    <CartProvider>
-      <RouterProvider router={appRouter} />
-    </CartProvider>
-  </LocationProvider>
+  <ToastProvider>
+    <LocationProvider>
+      <CartProvider>
+        <RouterProvider router={appRouter} />
+      </CartProvider>
+    </LocationProvider>
+  </ToastProvider>
 );

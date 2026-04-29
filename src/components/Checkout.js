@@ -1,10 +1,12 @@
 import { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { ToastContext } from '../context/ToastContext';
 import '../styles/Checkout.css';
 
 export const Checkout = () => {
   const { cartItems, getTotalPrice, restaurantInfo, clearCart } = useContext(CartContext);
+  const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -56,7 +58,7 @@ export const Checkout = () => {
     if (!formData.firstName || !formData.lastName || !formData.email || 
         !formData.phone || !formData.address || !formData.city || 
         !formData.state || !formData.zipcode) {
-      alert('Please fill in all fields');
+      showToast('Please fill in all fields', 'error', 1400);
       return;
     }
 
@@ -86,11 +88,11 @@ export const Checkout = () => {
     clearCart();
     setOrderPlaced(true);
 
-    // Show success message
+    showToast(`Order ${orderId} placed successfully`, 'success', 1600);
+
     setTimeout(() => {
-      alert(`Order Placed Successfully!\nOrder ID: ${orderId}\nTotal Amount: ₹${totalAmount.toFixed(2)}\n\nPayment Method: ${formData.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment'}`);
       navigate('/');
-    }, 1500);
+    }, 1200);
   };
 
   return (

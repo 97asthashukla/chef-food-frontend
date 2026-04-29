@@ -1,4 +1,25 @@
+import { useContext, useState } from "react";
+import { ToastContext } from "../context/ToastContext";
+
 export const Contact = () => {
+  const { showToast } = useContext(ToastContext);
+  const [feedback, setFeedback] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFeedback((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    showToast("Feedback submitted successfully", "success", 1500);
+    setFeedback({ name: "", email: "", message: "" });
+  };
+
   return (
     <div className="contact-container">
       <section className="contact-hero">
@@ -25,10 +46,31 @@ export const Contact = () => {
         <div className="contact-card">
           <h3>Share Feedback</h3>
           <p>We love hearing from you.</p>
-          <form className="contact-form" onSubmit={(event) => event.preventDefault()}>
-            <input type="text" placeholder="Your Name" required />
-            <input type="email" placeholder="Email Address" required />
-            <textarea placeholder="Tell us how we can improve" rows="4" required></textarea>
+          <form className="contact-form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              value={feedback.name}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              value={feedback.email}
+              onChange={handleChange}
+              required
+            />
+            <textarea
+              name="message"
+              placeholder="Tell us how we can improve"
+              rows="4"
+              value={feedback.message}
+              onChange={handleChange}
+              required
+            ></textarea>
             <button type="submit">Submit</button>
           </form>
         </div>
