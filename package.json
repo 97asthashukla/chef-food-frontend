@@ -5,7 +5,7 @@
   "homepage": "https://97asthashukla.github.io/chef-food-frontend",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.html --public-url ./",
+    "build": "parcel build index.html --public-url ./ && node scripts/fix-gh-pages-paths.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "test": "jest"
