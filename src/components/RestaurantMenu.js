@@ -24,7 +24,28 @@ export const RestaurantMenu = () => {
     try {
       const url = buildMenuUrl(id, selectedLocation.lat, selectedLocation.lng);
       const response = await fetch(url);
-      const resData = await response.json();
+      if (response.ok) {
+        const resData = await response.json();
+        setRestaurantMenu(resData);
+        return;
+      }
+
+      // Fallback: relay Swiggy menu through r.jina.ai when backend proxy fails in production.
+      const swiggyMenuUrl = `https://www.swiggy.com/mapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=${selectedLocation.lat}&lng=${selectedLocation.lng}&restaurantId=${id}`;
+      const relayUrl = `https://r.jina.ai/http://${swiggyMenuUrl.replace("https://", "")}`;
+      const relayResponse = await fetch(relayUrl);
+
+      if (!relayResponse.ok) {
+        throw new Error("Both proxy and relay menu fetch failed");
+      }
+
+      const relayText = await relayResponse.text();
+      const jsonStart = relayText.indexOf("{");
+      if (jsonStart === -1) {
+        throw new Error("Relay response did not contain JSON");
+      }
+
+      const resData = JSON.parse(relayText.slice(jsonStart));
       setRestaurantMenu(resData);
     } catch (error) {
       setRestaurantMenu({ data: { cards: [] } });
