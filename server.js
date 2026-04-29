@@ -39,7 +39,7 @@ const BROWSER_HEADERS = {
   "connection": "keep-alive",
 };
 
-app.get("/api/restaurants/list", async (req, res) => {
+const handleRestaurantsList = async (req, res) => {
   try {
     const locationQuery = getLocationQuery(req.query);
     const targetUrl = `https://www.swiggy.com/dapi/restaurants/list/v5?${locationQuery}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`;
@@ -57,20 +57,31 @@ app.get("/api/restaurants/list", async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Restaurant API error", detail: error.message });
   }
-});
+};
+
+// Keep both routes for compatibility with old/new frontend builds
+app.get("/api/restaurants/list", handleRestaurantsList);
+app.get("/api/restaurants", handleRestaurantsList);
 
 app.get("/api/menu/:restaurantId", async (req, res) => {
   try {
     const { restaurantId } = req.params;
     const locationQuery = getLocationQuery(req.query);
-    const targetUrl = `https://www.swiggy.com/mapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&${locationQuery}&restaurantId=${restaurantId}`;
-    const response = await fetch(targetUrl, {
-      headers: BROWSER_HEADERS,
-    });
+    const primaryUrl = `https://www.swiggy.com/mapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&${locationQuery}&restaurantId=${restaurantId}`;
+    const fallbackUrl = `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&${locationQuery}&restaurantId=${restaurantId}`;
+
+    let response = await fetch(primaryUrl, { headers: BROWSER_HEADERS });
+    if (!response.ok) {
+      response = await fetch(fallbackUrl, { headers: BROWSER_HEADERS });
+    }
 
     if (!response.ok) {
       const errText = await response.text().catch(() => "");
-      return res.status(response.status).json({ message: "Failed to fetch menu", status: response.status, detail: errText.substring(0, 200) });
+      return res.status(response.status).json({
+        message: "Failed to fetch menu",
+        status: response.status,
+        detail: errText.substring(0, 200),
+      });
     }
 
     const data = await response.json();
