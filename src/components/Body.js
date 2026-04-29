@@ -1,24 +1,41 @@
-import { useEffect, useState, useContext } from "react";
-import { CDN_URL, buildRestaurantListUrl } from "../utils/constant";
+import { useContext } from "react";
+import { CDN_URL, FALLBACK_IMAGE } from "../utils/constant";
 import { LocationContext } from "../context/LocationContext";
 import { Shimmer } from "./Shimmer";
 import { Link } from "react-router-dom";
+import { useRestaurantDirectory } from "../hooks/useRestaurantDirectory";
+import {
+  COST_BUCKET_OPTIONS,
+  MIN_RATING_OPTIONS,
+  SORT_OPTIONS,
+} from "../utils/restaurantData";
 
 const ResCard = ({restData}) => {
-  const {name,cloudinaryImageId,cuisines,avgRating,costForTwo,sla, id}=restData.info
+  const {
+    id,
+    name,
+    imageId,
+    cuisines,
+    avgRatingLabel,
+    costForTwoLabel,
+    deliveryTimeLabel,
+    areaName,
+  } = restData;
+
     return(
   <div className="res-card">
     <Link to={`/restaurant/${id}`}>
     <img
       className="res-logo"
       alt="res-logo"
-      src={`${CDN_URL}/${cloudinaryImageId}`}
+      src={imageId ? `${CDN_URL}/${imageId}` : FALLBACK_IMAGE}
     />
     <h3 className="res-name">{name}</h3>
-    <h4 className="res-cuisines">{cuisines.join(", ")}</h4>
-    <h4 className="res-cost">{costForTwo}</h4>
-    <h4 className="res-rating">{avgRating} stars</h4>
-    <h4 className="res-time">{sla.deliveryTime} mins</h4>
+    <h4 className="res-cuisines">{cuisines.join(", ") || "Cuisine details unavailable"}</h4>
+    <h4 className="res-area">{areaName}</h4>
+    <h4 className="res-cost">{costForTwoLabel}</h4>
+    <h4 className="res-rating">{avgRatingLabel}</h4>
+    <h4 className="res-time">{deliveryTimeLabel}</h4>
     </Link>
   </div>
 )};
@@ -26,111 +43,99 @@ const ResCard = ({restData}) => {
 
 export const Body = () => {
     const { selectedLocation } = useContext(LocationContext);
-    const [MockDatas,setMockDatas] = useState([])
-    const [searchText, setSearchText] = useState('')
-    const [filteredRestaurant,setFilteredRestaurant] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
-    const [fetchError, setFetchError] = useState("")
-    
-    useEffect(()=>{
-        if (selectedLocation) {
-          fetchDFata();
-        }
-    }, [selectedLocation])
+  // The page consumes normalized restaurant objects now, so the UI no longer depends on Swiggy's nested card shape.
+    const {
+      availableCuisines,
+      cache,
+      error,
+      filters,
+      isSearchPending,
+      loading,
+      resetFilters,
+      restaurants,
+      retry,
+      setQuery,
+      updateFilters,
+      visibleRestaurants,
+    } = useRestaurantDirectory(selectedLocation);
 
-    // Auto-apply filters when search text changes
-    useEffect(() => {
-      if (MockDatas.length > 0) {
-        applyFilters(MockDatas, searchText);
-      }
-    }, [searchText])
-
-    const applyFilters = (restaurants, query) => {
-      const normalizedQuery = query.trim().toLowerCase();
-
-      const filteredList = restaurants.filter((restaurant) => {
-        const nameMatches = restaurant?.info?.name
-          ?.toLowerCase()
-          .includes(normalizedQuery);
-        return nameMatches;
+    const handleFilterChange = (event) => {
+      const { name, value } = event.target;
+      updateFilters({
+        [name]: name === "minRating" ? Number(value) : value,
       });
-
-      setFilteredRestaurant(filteredList);
     };
 
-    const getRestaurantsFromCards = (cards = []) => {
-      for (const card of cards) {
-        const restaurants = card?.card?.card?.gridElements?.infoWithStyle?.restaurants;
-        if (Array.isArray(restaurants) && restaurants.length > 0) {
-          return restaurants;
-        }
-      }
+    if(loading) return <Shimmer/>
 
-      for (const card of cards) {
-        const restaurants = card?.card?.card?.restaurants;
-        if (Array.isArray(restaurants) && restaurants.length > 0) {
-          return restaurants;
-        }
-      }
-
-      return [];
-    };
-
-     async function fetchDFata(){
-        setIsLoading(true);
-        setFetchError("");
-        try {
-          const url = buildRestaurantListUrl(selectedLocation.lat, selectedLocation.lng);
-          const data =  await fetch(url);
-          const resData = await data.json();
-          const cards = resData?.data?.cards || [];
-          const restaurants = getRestaurantsFromCards(cards);
-
-          setMockDatas(restaurants);
-          applyFilters(restaurants, searchText);
-
-          if (restaurants.length === 0) {
-            setFetchError("No restaurants found right now. Please refresh.");
-          }
-        } catch (error) {
-          setMockDatas([]);
-          setFilteredRestaurant([]);
-          setFetchError("Unable to load restaurants. Please check your network and try again.");
-        } finally {
-          setIsLoading(false);
-        }
-     }
-     if(isLoading) return <Shimmer/>
-
-     if(fetchError) {
+     if(error) {
       return (
         <div className="body">
-          <div className="filter">
-            <button className="filter-btn" onClick={fetchDFata}>Retry</button>
+          <div className="filter error-actions">
+            <button className="filter-btn" onClick={retry}>Retry</button>
           </div>
-          <h3>{fetchError}</h3>
+          <h3>{error}</h3>
         </div>
       );
      }
     return(
   <div className="body">
     <div className="filter">
-        <div className="search">
-            <input type="text" value={searchText} onChange={((e)=>setSearchText(e.target.value))}/>
-            <button
-              onClick={() => {
-                applyFilters(MockDatas, searchText);
-              }}
-            >
-              Search
+        <div className="search search-panel">
+            <input
+              type="text"
+              value={filters.query}
+              placeholder="Search restaurants, cuisines, or area"
+              onChange={(event)=>setQuery(event.target.value)}
+            />
+            <button onClick={() => setQuery("")} disabled={!filters.query}>
+              Clear
             </button>
         </div>
-    {/* <button className="filter-btn" onClick={()=>{const filteredList = MockDatas.filter(rest=>((rest.info.avgRating) >= 4));setMockDatas(filteredList)}} >Top Restaurants
-    </button> */}
+        <div className="filter-controls">
+          <select name="cuisine" value={filters.cuisine} onChange={handleFilterChange}>
+            <option value="all">All cuisines</option>
+            {availableCuisines.map((cuisine) => (
+              <option key={cuisine} value={cuisine}>{cuisine}</option>
+            ))}
+          </select>
+          <select name="minRating" value={filters.minRating} onChange={handleFilterChange}>
+            {MIN_RATING_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+          <select name="costBucket" value={filters.costBucket} onChange={handleFilterChange}>
+            {COST_BUCKET_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+          <select name="sortBy" value={filters.sortBy} onChange={handleFilterChange}>
+            {SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+          <button className="filter-btn" onClick={resetFilters}>Reset filters</button>
+        </div>
+    </div>
+    <div className="directory-status">
+      <p>
+        Showing {visibleRestaurants.length} of {restaurants.length} restaurants
+        {selectedLocation ? ` near ${selectedLocation.name}` : ""}.
+      </p>
+      <div className="directory-meta">
+        {isSearchPending ? <span className="directory-badge">Updating search...</span> : null}
+        {cache.isCached ? <span className="directory-badge">Loaded from cache</span> : null}
+      </div>
     </div>
     <div className="res-container">
-       {filteredRestaurant?.map(rest=>
-        <ResCard key={rest.info.id}
+       {visibleRestaurants.length === 0 ? (
+        <div className="empty-state">
+          <h3>No restaurants matched these filters.</h3>
+          <p>Try clearing the search, changing cuisine, or lowering the minimum rating.</p>
+          <button className="filter-btn" onClick={resetFilters}>Show all restaurants</button>
+        </div>
+       ) : visibleRestaurants.map(rest=>
+        <ResCard key={rest.id}
           restData={rest}
         />
         )}
