@@ -1,22 +1,29 @@
 import "../RestaurantMenuBody.css";
 import { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
-import { CDN_URL, FALLBACK_IMAGE, MENU_URL } from "../utils/constant";
+import { CDN_URL, FALLBACK_IMAGE, buildMenuUrl } from "../utils/constant";
 import { CartContext } from "../context/CartContext";
+import { LocationContext } from "../context/LocationContext";
+import { FilterContext } from "../context/FilterContext";
 
 
 export const RestaurantMenu = () => {
   const [restaurantMenu, setRestaurantMenu] = useState(null);
   const { id } = useParams();
+  const { selectedLocation } = useContext(LocationContext);
+  const { foodTypeFilter } = useContext(FilterContext);
   const { addToCart, updateQuantity, cartItems, getTotalPrice } = useContext(CartContext);
 
   useEffect(() => {
-    fetchData();
-  }, [id]);
+    if (selectedLocation) {
+      fetchData();
+    }
+  }, [id, selectedLocation]);
 
   async function fetchData() {
     try {
-      const response = await fetch(MENU_URL(id));
+      const url = buildMenuUrl(id, selectedLocation.lat, selectedLocation.lng);
+      const response = await fetch(url);
       const resData = await response.json();
       setRestaurantMenu(resData);
     } catch (error) {
@@ -34,10 +41,40 @@ export const RestaurantMenu = () => {
   const regularCards =
     cards.find((card) => card?.groupedCard?.cardGroupMap?.REGULAR?.cards)?.groupedCard?.cardGroupMap?.REGULAR?.cards || [];
 
+  // Helper function to check if item matches food type filter
+  const matchesFoodTypeFilter = (item) => {
+    const isVeg = item.isVeg === 1 || item?.itemAttribute?.vegClassifier === "VEG";
+    
+    if (foodTypeFilter === "veg") {
+      return isVeg;
+    }
+    if (foodTypeFilter === "nonVeg") {
+      return !isVeg;
+    }
+    return true; // "all" shows everything
+  };
+
   const menuCategories = regularCards
-    .map((categoryCard) => categoryCard?.card?.card)
+    .map((categoryCard) => {
+      const category = categoryCard?.card?.card;
+      if (!category?.title || !Array.isArray(category?.itemCards)) {
+        return null;
+      }
+      
+      // Filter items based on food type filter
+      const filteredItems = category.itemCards.filter((itemCard) => {
+        const itemInfo = itemCard?.card?.info || {};
+        return matchesFoodTypeFilter(itemInfo);
+      });
+      
+      return {
+        ...category,
+        itemCards: filteredItems
+      };
+    })
     .filter(
       (category) =>
+        category &&
         category?.title &&
         Array.isArray(category?.itemCards) &&
         category.itemCards.length > 0

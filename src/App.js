@@ -6,9 +6,12 @@ import { Cart } from "./components/Cart";
 import { Checkout } from "./components/Checkout";
 import { createHashRouter, Outlet, RouterProvider } from "react-router-dom";
 import { About } from "./components/About";
+import { Contact } from "./components/Contact";
 import { Error } from "./components/Error";
 import { RestaurantMenu } from "./components/RestaurantMenu";
 import { CartProvider } from "./context/CartContext";
+import { LocationProvider } from "./context/LocationContext";
+import { FilterProvider } from "./context/FilterContext";
 
 
 const AppComponent = () => (
@@ -42,6 +45,10 @@ const appRouter = createHashRouter([
       {
         path:'/about',
         element:<About/>
+      },
+      {
+        path:'/contact',
+        element:<Contact/>
       }
     ],
     errorElement:<Error/>
@@ -50,7 +57,11 @@ const appRouter = createHashRouter([
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <CartProvider>
-    <RouterProvider router={appRouter} />
-  </CartProvider>
+  <LocationProvider>
+    <FilterProvider>
+      <CartProvider>
+        <RouterProvider router={appRouter} />
+      </CartProvider>
+    </FilterProvider>
+  </LocationProvider>
 );

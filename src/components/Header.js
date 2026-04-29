@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { LOGO_URL } from "../utils/constant";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
+import { LocationSelector } from "./LocationSelector";
 
 export const Header = () => {
   const { getTotalItems } = useContext(CartContext);
@@ -15,12 +16,13 @@ export const Header = () => {
           src={`${LOGO_URL}`}
           alt="Logo"
         />
+        <LocationSelector />
         <div className="nav-items">
           <ul>
             <li>
               <Link to={"/"}>Home</Link></li>
             <li><Link to={"/about"}>About Us</Link></li>
-            <li><Link to={"#"}>Contact Us</Link></li>
+            <li><Link to={"/contact"}>Contact Us</Link></li>
             <li className="cart-link">
               <Link to={"/cart"}>
                 🛒 Cart

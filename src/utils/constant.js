@@ -2,12 +2,28 @@ export const CDN_URL = "https://media-assets.swiggy.com/swiggy/image/upload/fl_l
 
 export const LOGO_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeVpeqdR9OxtpTOdBuyf7npN4dQ5BWRQWhOcsRMxVxojE9Eaf2mXDl_KM&s"
 
-// Swiggy API endpoints with CORS proxy
-const CORS_PROXY = "https://corsproxy.io/?";
-const LOCATION_QUERY = "lat=28.5822513&lng=77.3334716";
+// Use your own backend proxy to avoid third-party payload limits.
+const API_BASE_DEV = "http://localhost:5000";
+const API_BASE_PROD = "https://chef-food-proxy.onrender.com";
 
-export const RESTAURANT_LIST_URL = `${CORS_PROXY}https://www.swiggy.com/dapi/restaurants/list/v5?${LOCATION_QUERY}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`
+const API_BASE =
+	typeof window !== "undefined" && window.location.hostname.includes("github.io")
+		? API_BASE_PROD
+		: API_BASE_DEV;
 
-export const MENU_URL = (restaurantId) => `${CORS_PROXY}https://www.swiggy.com/mapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&${LOCATION_QUERY}&restaurantId=${restaurantId}`
+// Build URLs with dynamic location parameters
+export const buildRestaurantListUrl = (lat, lng) => {
+	const locationQuery = `lat=${lat}&lng=${lng}`;
+	return `${API_BASE}/api/restaurants/list?${locationQuery}`;
+};
+
+export const buildMenuUrl = (restaurantId, lat, lng) => {
+	const locationQuery = `lat=${lat}&lng=${lng}`;
+	return `${API_BASE}/api/menu/${restaurantId}?${locationQuery}`;
+};
+
+// Legacy exports (keeping for backwards compatibility)
+export const RESTAURANT_LIST_URL = buildRestaurantListUrl(28.5822513, 77.3334716);
+export const MENU_URL = (restaurantId) => buildMenuUrl(restaurantId, 28.5822513, 77.3334716);
 
 export const FALLBACK_IMAGE = "https://via.placeholder.com/300x200?text=No+Image";

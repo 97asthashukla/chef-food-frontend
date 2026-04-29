@@ -2,15 +2,26 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-const LOCATION_QUERY = "lat=28.5822513&lng=77.3334716";
+// Default location (Delhi) for backwards compatibility
+const DEFAULT_LOCATION = "lat=28.5822513&lng=77.3334716";
 
 app.use(cors());
 
-app.get("/api/restaurants/list", async (_req, res) => {
+// Helper function to extract and validate location params
+const getLocationQuery = (query) => {
+  const { lat, lng } = query;
+  if (lat && lng) {
+    return `lat=${lat}&lng=${lng}`;
+  }
+  return DEFAULT_LOCATION;
+};
+
+app.get("/api/restaurants/list", async (req, res) => {
   try {
-    const targetUrl = `https://www.swiggy.com/dapi/restaurants/list/v5?${LOCATION_QUERY}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`;
+    const locationQuery = getLocationQuery(req.query);
+    const targetUrl = `https://www.swiggy.com/dapi/restaurants/list/v5?${locationQuery}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`;
     const response = await fetch(targetUrl, {
       headers: {
         "user-agent": "Mozilla/5.0",
@@ -32,7 +43,8 @@ app.get("/api/restaurants/list", async (_req, res) => {
 app.get("/api/menu/:restaurantId", async (req, res) => {
   try {
     const { restaurantId } = req.params;
-    const targetUrl = `https://www.swiggy.com/mapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&${LOCATION_QUERY}&restaurantId=${restaurantId}`;
+    const locationQuery = getLocationQuery(req.query);
+    const targetUrl = `https://www.swiggy.com/mapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&${locationQuery}&restaurantId=${restaurantId}`;
     const response = await fetch(targetUrl, {
       headers: {
         "user-agent": "Mozilla/5.0",

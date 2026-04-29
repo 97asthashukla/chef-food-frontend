@@ -25,6 +25,70 @@
     box-shadow: 0 4px 12px rgba(255, 82, 0, 0.3);
 }
 
+.filter-btn-active {
+  background: #1c1c1c;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+}
+
+.filter-btn-active:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-chip {
+  border: 1px solid #e8e8e8;
+  background: #fff;
+  color: #3d4152;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.filter-chip:hover {
+  border-color: #d4d5d9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filter-chip-active {
+  border-color: #ff5200;
+  color: #ff5200;
+  background: #fff7f2;
+}
+
+.chip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.chip-dot-veg {
+  background: #1ba672;
+}
+
+.chip-dot-nonveg {
+  background: #e43b4f;
+}
+
 .logo{
     width: 200px;
     height: 100px;
@@ -318,6 +382,161 @@
   font-weight: 500;
   margin: 0;
   opacity: 0.95;
+}
+
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+  min-height: calc(100vh - 120px);
+}
+
+.contact-hero {
+  background: linear-gradient(135deg, #ff5200 0%, #ff6b35 100%);
+  color: white;
+  text-align: center;
+  padding: 70px 24px;
+}
+
+.contact-title {
+  font-size: 42px;
+  margin: 0 0 10px;
+}
+
+.contact-subtitle {
+  font-size: 17px;
+  margin: 0;
+  opacity: 0.95;
+}
+
+.contact-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 40px 24px 60px;
+}
+
+.contact-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+}
+
+.contact-card h3 {
+  margin: 0 0 14px;
+  color: #1c1c1c;
+}
+
+.contact-card p {
+  color: #575757;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  border: 1.5px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: #ff5200;
+  box-shadow: 0 0 0 4px rgba(255, 82, 0, 0.12);
+}
+
+.contact-form button {
+  border: none;
+  border-radius: 8px;
+  padding: 11px 14px;
+  background: linear-gradient(135deg, #ff5200 0%, #ff6b35 100%);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.contact-form button:hover {
+  box-shadow: 0 4px 12px rgba(255, 82, 0, 0.3);
+}
+
+/* Location Selector */
+.location-selector-wrapper {
+  position: relative;
+  margin: 0 20px;
+}
+
+.location-selector-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #ff5200 0%, #ff6b35 100%);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.location-selector-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 82, 0, 0.3);
+}
+
+.location-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  min-width: 150px;
+  margin-top: 8px;
+}
+
+.location-option {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.location-option:hover {
+  background: #f5f5f5;
+}
+
+.location-option.active {
+  background: #fff7f2;
+  color: #ff5200;
+  font-weight: 600;
+}
+
+.location-option:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.location-option:last-child {
+  border-radius: 0 0 8px 8px;
 }
 
 /* Responsive Design */
