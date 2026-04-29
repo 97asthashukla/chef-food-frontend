@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { CDN_URL, buildRestaurantListUrl } from "../utils/constant";
 import { LocationContext } from "../context/LocationContext";
-import { FilterContext } from "../context/FilterContext";
 import { Shimmer } from "./Shimmer";
 import { Link } from "react-router-dom";
 
@@ -27,7 +26,6 @@ const ResCard = ({restData}) => {
 
 export const Body = () => {
     const { selectedLocation } = useContext(LocationContext);
-    const { foodTypeFilter, changeFoodTypeFilter } = useContext(FilterContext);
     const [MockDatas,setMockDatas] = useState([])
     const [searchText, setSearchText] = useState('')
     const [filteredRestaurant,setFilteredRestaurant] = useState([])
@@ -60,13 +58,6 @@ export const Body = () => {
       setFilteredRestaurant(filteredList);
     };
 
-    const getFilterBtnClass = (filterValue) =>
-      foodTypeFilter === filterValue ? "filter-chip filter-chip-active" : "filter-chip";
-
-    const updateFoodTypeFilter = (nextFilter) => {
-      changeFoodTypeFilter(nextFilter);
-    };
-
     const getRestaurantsFromCards = (cards = []) => {
       for (const card of cards) {
         const restaurants = card?.card?.card?.gridElements?.infoWithStyle?.restaurants;
@@ -96,7 +87,7 @@ export const Body = () => {
           const restaurants = getRestaurantsFromCards(cards);
 
           setMockDatas(restaurants);
-          applyFilters(restaurants, searchText, foodTypeFilter);
+          applyFilters(restaurants, searchText);
 
           if (restaurants.length === 0) {
             setFetchError("No restaurants found right now. Please refresh.");
@@ -128,33 +119,11 @@ export const Body = () => {
             <input type="text" value={searchText} onChange={((e)=>setSearchText(e.target.value))}/>
             <button
               onClick={() => {
-                applyFilters(MockDatas, searchText, foodTypeFilter);
+                applyFilters(MockDatas, searchText);
               }}
             >
               Search
             </button>
-        </div>
-        <div className="filter-chip-group">
-          <button
-            className={getFilterBtnClass("veg")}
-            onClick={() => updateFoodTypeFilter("veg")}
-          >
-            <span className="chip-dot chip-dot-veg"></span>
-            Pure Veg
-          </button>
-          <button
-            className={getFilterBtnClass("nonVeg")}
-            onClick={() => updateFoodTypeFilter("nonVeg")}
-          >
-            <span className="chip-dot chip-dot-nonveg"></span>
-            Non Veg
-          </button>
-          <button
-            className={getFilterBtnClass("all")}
-            onClick={() => updateFoodTypeFilter("all")}
-          >
-            All
-          </button>
         </div>
     {/* <button className="filter-btn" onClick={()=>{const filteredList = MockDatas.filter(rest=>((rest.info.avgRating) >= 4));setMockDatas(filteredList)}} >Top Restaurants
     </button> */}

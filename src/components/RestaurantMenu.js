@@ -4,14 +4,13 @@ import { useParams, Link } from "react-router-dom";
 import { CDN_URL, FALLBACK_IMAGE, buildMenuUrl } from "../utils/constant";
 import { CartContext } from "../context/CartContext";
 import { LocationContext } from "../context/LocationContext";
-import { FilterContext } from "../context/FilterContext";
 
 
 export const RestaurantMenu = () => {
   const [restaurantMenu, setRestaurantMenu] = useState(null);
+  const [foodTypeFilter, setFoodTypeFilter] = useState("all");
   const { id } = useParams();
   const { selectedLocation } = useContext(LocationContext);
-  const { foodTypeFilter } = useContext(FilterContext);
   const { addToCart, updateQuantity, cartItems, getTotalPrice } = useContext(CartContext);
 
   useEffect(() => {
@@ -127,6 +126,9 @@ export const RestaurantMenu = () => {
     return acc;
   }, {});
 
+  const getFilterBtnClass = (filterValue) =>
+    foodTypeFilter === filterValue ? "filter-chip filter-chip-active" : "filter-chip";
+
   return (
     <div className="restaurant-menu-body">
       <div className="menu-header">
@@ -146,6 +148,20 @@ export const RestaurantMenu = () => {
             <span className="delivery-time">{sla?.slaString || "Delivery time unavailable"}</span>
           </div>
         </div>
+      </div>
+
+      <div className="filter-chip-group">
+        <button className={getFilterBtnClass("veg")} onClick={() => setFoodTypeFilter("veg")}>
+          <span className="chip-dot chip-dot-veg"></span>
+          Pure Veg
+        </button>
+        <button className={getFilterBtnClass("nonVeg")} onClick={() => setFoodTypeFilter("nonVeg")}>
+          <span className="chip-dot chip-dot-nonveg"></span>
+          Non Veg
+        </button>
+        <button className={getFilterBtnClass("all")} onClick={() => setFoodTypeFilter("all")}>
+          All
+        </button>
       </div>
 
       {cartItems.length > 0 && (
