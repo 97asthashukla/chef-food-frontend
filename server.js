@@ -9,6 +9,10 @@ const DEFAULT_LOCATION = "lat=28.5822513&lng=77.3334716";
 
 app.use(cors());
 
+app.get("/", (_req, res) => {
+  res.send("✅ Swiggy Proxy API is working v2");
+});
+
 // Helper function to extract and validate location params
 const getLocationQuery = (query) => {
   const { lat, lng } = query;
