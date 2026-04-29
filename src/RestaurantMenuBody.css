@@ -83,6 +83,93 @@ body {
     font-size: 14px;
 }
 
+/* Cart Summary Card */
+.cart-summary-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ff5200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cart-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+}
+
+.cart-item-count,
+.cart-total {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.count-label,
+.total-label {
+    font-size: 13px;
+    color: #7c7c7c;
+    font-weight: 500;
+}
+
+.count-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ff5200;
+}
+
+.cart-total {
+    text-align: right;
+}
+
+.total-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1c1c1c;
+}
+
+.cart-divider {
+    width: 1px;
+    height: 45px;
+    background-color: #e8e8e8;
+}
+
+.view-cart-btn {
+    background: linear-gradient(135deg, #ff5200 0%, #ff6b35 100%);
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 82, 0, 0.2);
+    white-space: nowrap;
+}
+
+.view-cart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 82, 0, 0.3);
+}
+
 /* Search Section */
 .search-section {
     background-color: white;
@@ -288,25 +375,99 @@ body {
 
 .add-btn {
     flex: 1;
-    background: linear-gradient(135deg, #ff5200 0%, #ff6b35 100%);
-    border: none;
-    color: white;
-    padding: 12px 18px;
-    border-radius: 8px;
+    background: white;
+    border: 2px solid #ff5200;
+    color: #ff5200;
+    padding: 10px 16px;
+    border-radius: 6px;
     font-weight: 700;
     cursor: pointer;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(255, 82, 0, 0.2);
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .add-btn:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(255, 82, 0, 0.35);
+    background: #fff0eb;
+    border-color: #ff6b35;
+    transform: none;
 }
 
 .add-btn:active {
-    transform: scale(0.98);
+    background: #ffe8e0;
+    transform: none;
+}
+
+.add-btn.added {
+    background: #f0f0f0;
+    border-color: #e8e8e8;
+    color: #7c7c7c;
+}
+
+/* Quantity Selector */
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    background: white;
+    border: 2px solid #ff5200;
+    border-radius: 6px;
+    padding: 0;
+    animation: slideInQuantity 0.3s ease-out;
+    width: 100%;
+}
+
+@keyframes slideInQuantity {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.qty-decrease-btn,
+.qty-increase-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: white;
+    color: #ff5200;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    padding: 0;
+}
+
+.qty-decrease-btn:hover,
+.qty-increase-btn:hover {
+    background-color: #fff0eb;
+}
+
+.qty-decrease-btn:active,
+.qty-increase-btn:active {
+    background-color: #ffe8e0;
+}
+
+.qty-display {
+    flex: 1;
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #1c1c1c;
+    padding: 0 12px;
+    border-left: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
 }
 
 .qty-control {
@@ -376,6 +537,33 @@ body {
         flex-wrap: wrap;
     }
 
+    .cart-summary-card {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+        margin-bottom: 20px;
+    }
+
+    .cart-info {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .cart-divider {
+        width: 100%;
+        height: 1px;
+    }
+
+    .cart-total {
+        text-align: left;
+    }
+
+    .view-cart-btn {
+        width: 100%;
+        text-align: center;
+    }
+
     .menu-items {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 15px;
@@ -392,6 +580,92 @@ body {
 
     .search-section {
         margin-bottom: 25px;
+    }
+}
+
+/* Floating Cart Button (Swiggy Style) */
+.floating-cart-button {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.floating-cart-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: #1c1c1c;
+    background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.floating-cart-link:hover {
+    background: linear-gradient(135deg, #ffe8e0 0%, #fff9f5 100%);
+}
+
+.floating-cart-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.floating-cart-icon {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.floating-cart-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.floating-cart-items {
+    font-size: 13px;
+    color: #7c7c7c;
+    font-weight: 500;
+}
+
+.floating-cart-amount {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1c1c1c;
+}
+
+.floating-cart-arrow {
+    font-size: 20px;
+    color: #ff5200;
+    font-weight: 700;
+    animation: slideArrow 0.6s ease-in-out infinite;
+}
+
+@keyframes slideArrow {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(4px);
     }
 }
 

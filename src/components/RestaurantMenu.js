@@ -1,12 +1,14 @@
 import "../RestaurantMenuBody.css";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useEffect, useState, useContext } from "react";
+import { useParams, Link } from "react-router-dom";
 import { CDN_URL, FALLBACK_IMAGE, MENU_URL } from "../utils/constant";
+import { CartContext } from "../context/CartContext";
 
 
 export const RestaurantMenu = () => {
   const [restaurantMenu, setRestaurantMenu] = useState(null);
   const { id } = useParams();
+  const { addToCart, updateQuantity, cartItems, getTotalPrice } = useContext(CartContext);
 
   useEffect(() => {
     fetchData();
@@ -28,7 +30,6 @@ export const RestaurantMenu = () => {
     card?.card?.card?.["@type"]?.includes("swiggy.presentation.food.v2.Restaurant")
   );
   const restaurantInfo = restaurantCard?.card?.card?.info || {};
-  console.log(restaurantInfo,"flkasjlalks")
 
   const regularCards =
     cards.find((card) => card?.groupedCard?.cardGroupMap?.REGULAR?.cards)?.groupedCard?.cardGroupMap?.REGULAR?.cards || [];
@@ -63,6 +64,11 @@ export const RestaurantMenu = () => {
     return (value / 100).toFixed(0);
   };
 
+  const cartQuantityMap = cartItems.reduce((acc, item) => {
+    acc[item.id] = item.quantity;
+    return acc;
+  }, {});
+
   return (
     <div className="restaurant-menu-body">
       <div className="menu-header">
@@ -83,6 +89,25 @@ export const RestaurantMenu = () => {
           </div>
         </div>
       </div>
+
+      {cartItems.length > 0 && (
+        <div className="cart-summary-card">
+          <div className="cart-info">
+            <div className="cart-item-count">
+              <span className="count-label">Items in Cart</span>
+              <span className="count-value">{cartItems.reduce((total, item) => total + item.quantity, 0)}</span>
+            </div>
+            <div className="cart-divider"></div>
+            <div className="cart-total">
+              <span className="total-label">Total Amount</span>
+              <span className="total-value">₹ {(getTotalPrice() + getTotalPrice() * 0.05).toFixed(2)}</span>
+            </div>
+          </div>
+          <Link to="/cart" className="view-cart-btn">
+            View Cart
+          </Link>
+        </div>
+      )}
 
       {menuCategories.length === 0 ? (
         <div className="menu-category">
@@ -129,7 +154,47 @@ Rs {formatPrice(itemInfo.price ?? itemInfo.defaultPrice)}
                         </div>
                       </div>
                       <div className="item-actions">
-                        <button className="add-btn">Add to cart</button>
+                        {cartQuantityMap[itemInfo.id] ? (
+                          <div className="quantity-selector">
+                            <button 
+                              className="qty-decrease-btn"
+                              onClick={() => {
+                                const currentQty = cartQuantityMap[itemInfo.id] || 0;
+                                updateQuantity(itemInfo.id, currentQty - 1);
+                              }}
+                            >
+                              −
+                            </button>
+                            <span className="qty-display">{cartQuantityMap[itemInfo.id]}</span>
+                            <button 
+                              className="qty-increase-btn"
+                              onClick={() => {
+                                addToCart(itemInfo, {
+                                  id: id,
+                                  name: name,
+                                  cuisines: cuisines,
+                                  avgRating: avgRating
+                                });
+                              }}
+                            >
+                              +
+                            </button>
+                          </div>
+                        ) : (
+                          <button 
+                            className="add-btn"
+                            onClick={() => {
+                              addToCart(itemInfo, {
+                                id: id,
+                                name: name,
+                                cuisines: cuisines,
+                                avgRating: avgRating
+                              });
+                            }}
+                          >
+                            Add to cart
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -138,6 +203,21 @@ Rs {formatPrice(itemInfo.price ?? itemInfo.defaultPrice)}
             </div>
           </div>
         ))
+      )}
+      
+      {cartItems.length > 0 && (
+        <div className="floating-cart-button">
+          <Link to="/cart" className="floating-cart-link">
+            <div className="floating-cart-content">
+              <span className="floating-cart-icon">🛒</span>
+              <div className="floating-cart-text">
+                <span className="floating-cart-items">{cartItems.reduce((total, item) => total + item.quantity, 0)} items</span>
+                <span className="floating-cart-amount">₹ {(getTotalPrice() + getTotalPrice() * 0.05).toFixed(2)}</span>
+              </div>
+            </div>
+            <span className="floating-cart-arrow">→</span>
+          </Link>
+        </div>
       )}
     </div>
   );
