@@ -11,8 +11,16 @@ if (!fs.existsSync(distIndexPath)) {
 const html = fs.readFileSync(distIndexPath, "utf8");
 
 const fixed = html
+  // quoted with ./
   .replace(/href="\.\/chef-food-frontend\./g, 'href="/chef-food-frontend/chef-food-frontend.')
   .replace(/src="\.\/chef-food-frontend\./g, 'src="/chef-food-frontend/chef-food-frontend.')
+  // quoted without ./
+  .replace(/href="chef-food-frontend\./g, 'href="/chef-food-frontend/chef-food-frontend.')
+  .replace(/src="chef-food-frontend\./g, 'src="/chef-food-frontend/chef-food-frontend.')
+  // unquoted (parcel minified output)
+  .replace(/href=chef-food-frontend\./g, 'href=/chef-food-frontend/chef-food-frontend.')
+  .replace(/src=chef-food-frontend\./g, 'src=/chef-food-frontend/chef-food-frontend.')
+  // already has /chef-food-frontend/ prefix but without subdirectory
   .replace(/href="\/chef-food-frontend\./g, 'href="/chef-food-frontend/chef-food-frontend.')
   .replace(/src="\/chef-food-frontend\./g, 'src="/chef-food-frontend/chef-food-frontend.');
 
